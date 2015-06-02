@@ -40,7 +40,7 @@ CREATE TABLE Medico (
 
 -- PACIENTE 
 CREATE TABLE Paciente (
-    RG integer primary key,
+    RG varchar(11) primary key,
     nome varchar(55),
     idade integer,
     codMunicipio integer,
@@ -59,7 +59,7 @@ CREATE TABLE Doenca (
 -- CONSULTA
 CREATE TABLE Consulta (
     CRM integer,
-    RG integer,
+    RG varchar(11),
     data date,
     hora time,
     codDoenca integer,
@@ -77,7 +77,7 @@ CREATE TABLE Consulta (
 
 -- FUNCIONARIO 
 CREATE TABLE Funcionario (
-    RG integer primary key,
+    RG varchar(11) primary key,
     nome varchar(55),
     idade integer,    
     codMunicipio integer,
