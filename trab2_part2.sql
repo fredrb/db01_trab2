@@ -130,7 +130,7 @@ INSERT INTO Ordem_Compra_Corpo VALUES (60001, 1, 1, 80001, 70001);
 INSERT INTO Ordem_Compra_Corpo VALUES (60002, 1, 2, 80003, 70001);
 
 INSERT INTO Ordem_Compra_Corpo VALUES (60003, 11, 1, 80003, 70002);
-INSERT INTO Ordem_Compra_Corpo VALUES (60004, 1, 2, 80001, 70002);git
+INSERT INTO Ordem_Compra_Corpo VALUES (60004, 1, 2, 80001, 70002);
 
 INSERT INTO Ordem_Compra_Corpo VALUES (60005, 1, 1, 80005, 70003);
 INSERT INTO Ordem_Compra_Corpo VALUES (60006, 1, 2, 80003, 70003);
@@ -141,3 +141,69 @@ INSERT INTO Ordem_Compra_Corpo VALUES (60009, 2, 2, 80001, 70004);
 
 INSERT INTO Ordem_Compra_Corpo VALUES (60010, 10, 1, 80001, 70005);
 INSERT INTO Ordem_Compra_Corpo VALUES (60011, 2, 2, 80002, 70005);
+
+
+-- 2 QUERIES 1 TABELA
+SELECT * FROM Produto WHERE preco > 20; 
+SELECT * FROM Cliente WHERE nome_cliente like 'c%';
+
+-- 2 QUERIES 2 TABELAS
+SELECT * 
+	FROM Funcionario 
+INNER JOIN Cargo
+	ON Funcionario.id_cargo = Cargo.id_cargo
+WHERE
+	Cargo.nome_cargo = 'Vendedor';
+
+SELECT Funcionario.nome_func, Turno_Trabalho.horario_inicio, Turno_Trabalho.horario_fim
+	FROM Funcionario
+INNER JOIN Turno_Trabalho 
+	ON Funcionario.id_turno = Turno_Trabalho.id_turno;
+
+-- 2 QUERIES 3 TABELAS
+-- NUMERO TOTAL DE VENDAS FEITAS POR CONSULTORES
+SELECT COUNT(*)
+	FROM Ordem_Compra_Cabecalho
+INNER JOIN Funcionario
+	ON Ordem_Compra_Cabecalho.id_func = Funcionario.id_func
+INNER JOIN Cargo
+	ON Funcionario.id_cargo = Cargo.id_cargo
+WHERE
+	Cargo.id_cargo = 'Consultor';
+
+-- FUNCIONARIOS QUE VENDERAM O PRODUTO 80001
+SELECT Funcionario.nome_func
+	FROM Funcionario
+INNER JOIN Ordem_Compra_Cabecalho
+	ON Ordem_Compra_Cabecalho.id_func = Funcionario.id_func
+INNER JOIN Ordem_Compra_Corpo
+	ON Ordem_Compra_Corpo.id_compra_cabecalho = Ordem_Compra_Cabecalho.id_compra_cabecalho
+WHERE 
+	Ordem_Compra_Corpo.id_produto = 80001;
+	
+
+-- 2 QUERIES 4 TABELAS
+-- todos os produtos comprados pelo cliente c11
+SELECT nome_cliente, nome_produto
+	FROM Cliente
+INNER JOIN Ordem_Compra_Cabecalho
+	ON Cliente.id_cliente = Ordem_Compra_Cabecalho.id_cliente
+INNER JOIN Ordem_Compra_Corpo
+	ON Ordem_Compra_Corpo.id_compra_cabecalho = Ordem_Compra_Cabecalho.id_compra_cabecalho
+INNER JOIN Produto
+	ON Ordem_Compra_Corpo.id_produto = Produto.id_produto
+WHERE Cliente.nome_cliente = 'c11';
+
+-- soma de todas as vendas de um cliente onde um produto custa mais de 20 reais	
+SELECT Cliente.nome_cliente, SUM(Ordem_Compra_Cabecalho.total_compra_cabecalho)
+	FROM Cliente
+INNER JOIN Ordem_Compra_Cabecalho
+	ON Cliente.id_cliente = Ordem_Compra_Cabecalho.id_cliente
+INNER JOIN Ordem_Compra_Corpo
+	ON Ordem_Compra_Cabecalho.id_compra_cabecalho = Ordem_Compra_Corpo.id_compra_cabecalho
+INNER JOIN Produto 
+	ON Ordem_Compra_Corpo.id_produto = Produto.id_produto
+WHERE
+	Produto.preco_produto > 20
+GROUP BY Cliente.nome_cliente;
+
